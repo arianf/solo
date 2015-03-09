@@ -1,5 +1,5 @@
 # Project Name #
-
+  Please Respond
 <!-- 
 > This material was originally posted [here](http://www.quora.com/What-is-Amazons-approach-to-product-development-and-product-management). It is reproduced here for posterities sake.
 
@@ -19,26 +19,43 @@ Once the project moves into development, the press release can be used as a touc
 ## Heading ##
   > Name the product in a way the reader (i.e. your target customers) will understand.
 
+  Please respond is a mobile web app that allows you to post screenshots and receive advice on how to respond.
+
 ## Sub-Heading ##
   > Describe who the market for the product is and what benefit they get. One sentence only underneath the title.
+
+  Anyone who needs advice on how to respond in the middle of a conversation
 
 ## Summary ##
   > Give a summary of the product and the benefit. Assume the reader will not read anything else so make this paragraph good.
 
+  You will be able to upload screenshots of either email or text message's and have others help you come up with a response.
+
 ## Problem ##
   > Describe the problem your product solves.
+
+  It's difficult to come up with responses, or maybe you just want to vet your response.
 
 ## Solution ##
   > Describe how your product elegantly solves the problem.
 
+  Crowd source responses from anyone online
+
 ## Quote from You ##
   > A quote from a spokesperson in your company.
 
+  "We love using please respond"
 ## How to Get Started ##
   > Describe how easy it is to get started.
+
+  You just screen shot, and upload, that's it
 
 ## Customer Quote ##
   > Provide a quote from a hypothetical customer that describes how they experienced the benefit.
 
+  I used this service when I had an awkward email conversation with my boss, and I was able to form a repsonse that resulted in a desirable outcome.
+
 ## Closing and Call to Action ##
   > Wrap it up and give pointers where the reader should go next.
+
+  Sign up at http://pleaserespond.io
