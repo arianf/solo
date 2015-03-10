@@ -2,7 +2,7 @@
 // Here is how to define your module 
 // has dependent on mobile-angular-ui
 // 
-var app = angular.module('MobileAngularUiExamples', [
+var app = angular.module('PleaseRespond', [
   'ngRoute',
   'mobile-angular-ui',
   
@@ -26,6 +26,7 @@ app.run(function($transform) {
 // 
 app.config(function($routeProvider) {
   $routeProvider.when('/',              {templateUrl: 'home.html', reloadOnSearch: false});
+  $routeProvider.when('/ask',           {templateUrl: 'ask.html', controller: 'Ask', reloadOnSearch: false});
   $routeProvider.when('/scroll',        {templateUrl: 'scroll.html', reloadOnSearch: false}); 
   $routeProvider.when('/toggle',        {templateUrl: 'toggle.html', reloadOnSearch: false}); 
   $routeProvider.when('/tabs',          {templateUrl: 'tabs.html', reloadOnSearch: false}); 
@@ -38,6 +39,22 @@ app.config(function($routeProvider) {
   $routeProvider.when('/drag',          {templateUrl: 'drag.html', reloadOnSearch: false});
   $routeProvider.when('/drag2',         {templateUrl: 'drag2.html', reloadOnSearch: false});
   $routeProvider.when('/carousel',      {templateUrl: 'carousel.html', reloadOnSearch: false});
+});
+
+app.directive( 'goClick', function ( $location ) {
+  return function ( scope, element, attrs ) {
+    var path;
+
+    attrs.$observe( 'goClick', function (val) {
+      path = val;
+    });
+
+    element.bind( 'click', function () {
+      scope.$apply( function () {
+        $location.path( path );
+      });
+    });
+  };
 });
 
 // 
@@ -251,6 +268,27 @@ app.directive('dragMe', ['$drag', function($drag){
 // For this trivial demo we have just a unique MainController 
 // for everything
 //
+app.controller('Ask', function($rootScope, $scope){
+  $scope.test = function(direction) {
+    alert('TESTED');
+  };
+});
+
+app.directive('validFile',function(){
+  return {
+    require:'ngModel',
+    link:function(scope, el, attrs, ngModel){
+      //change event is fired when file is selected
+      el.bind('change',function(){
+        scope.$apply(function(){
+          ngModel.$setViewValue(el.val());
+          ngModel.$render();
+        });
+      });
+    }
+  };
+});
+
 app.controller('MainController', function($rootScope, $scope){
 
   $scope.swiped = function(direction) {

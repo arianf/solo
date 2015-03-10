@@ -1,0 +1,45 @@
+<div ui-content-for="title">
+  <span>Ask a Please Response</span>
+</div>
+
+<div class="scrollable">
+ <div class="scrollable-content section">
+   
+  <form role="askForm" name="askForm" ng-submit='askForm.$valid && ask()'  novalidate>
+    <fieldset>
+      <legend>Ask a Please Respond</legend>
+        <div class="form-group has-success has-feedback">
+          <label>Title</label>
+          <input type="text"
+                 ng-model="title"
+                 class="form-control"
+                 placeholder="Enter title"
+                 name="title" required>
+        </div>
+        <div style="color: red" ng-show="askForm.title.$dirty && askForm.title.$error.required">You can't leave this field empty!</div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea class="form-control" placeholder="Explain the situtation"></textarea>
+        </div>
+
+        <div class="form-group">
+        <span class="file-input btn btn-block btn-success btn-file">
+            Browse&hellip; <input type="file" valid-file ng-model="filename" required>
+        </span>
+          <!-- <input type="file" name="fileToUpload" ng-model="title" class="form-control"> -->
+        </div>
+    </fieldset>
+    <hr>
+
+    <button class="btn btn-primary btn-block" data-ng-disabled='askForm.$invalid'>
+      Ask
+    </button>
+
+    <div ui-content-for="navbarAction">
+      <button class='btn' ng-click='askForm.$valid && ask()' data-ng-disabled='askForm.$invalid'>Ask</button>
+    </div>
+
+  </form>
+ </div>
+</div>
