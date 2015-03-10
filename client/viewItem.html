@@ -1,0 +1,102 @@
+<div ui-content-for="title">
+  <span>View</span>
+</div>
+
+
+<div class="scrollable">
+  <div class="scrollable-content">
+    <div class="section">
+    <a href="#/view" class="btn btn-danger btn-block">Back</a>
+      <br><br>
+      <div class="panel panel-default" ng-repeat="idx in [1]">
+        <div class="panel-heading">
+          <div class="btn-group pull-right">
+            <a ui-turn-on='myDropdown0' class='btn'>
+              <i class="fa fa-ellipsis-v"></i>
+            </a>
+            <ul 
+              ui-state="myDropdown0"
+
+              class="dropdown-menu"
+              ui-outer-click="Ui.turnOff('myDropdown' + '0')"
+              ui-outer-click-if="Ui.active('myDropdown' + '0')"
+              role="menu"
+              ui-show="myDropdown0"
+              ui-turn-off="myDropdown0">
+
+              <li><a>Like</a></li>
+              <li class="divider"></li>
+              <li><a>Delete</a></li>
+              <li><a>Report</a></li>
+            </ul>
+          </div>
+          <h3 class="panel-title">{{response.title}}</h3>
+        </div>
+        <div class="panel-body">
+           {{response.desc}}
+           <br><br>
+           <img src="{{url}}" />
+        </div>
+      </div>
+
+      <div class="panel panel-default"  ng-repeat="comment in comments">
+        <div class="panel-heading">
+          <div class="btn-group pull-right">
+            <a ui-turn-on='myDropdown{{comment.id}}' class='btn'>
+              <i class="fa fa-ellipsis-v"></i>
+            </a>
+            <ul 
+              ui-state="myDropdown{{comment.id}}"
+
+              class="dropdown-menu"
+              ui-outer-click="Ui.turnOff('myDropdown' + comment.id)"
+              ui-outer-click-if="Ui.active('myDropdown' + comment.id)"
+              role="menu"
+              ui-show="myDropdown{{comment.id}}"
+              ui-turn-off="myDropdown{{comment.id}}">
+
+              <li><a>Like</a></li>
+              <li><a>Accept Answer</a></li>
+              <li class="divider"></li>
+              <li><a>Delete</a></li>
+              <li><a>Report</a></li>
+            </ul>
+          </div>
+          <h3 class="panel-title">{{comment.username}}</h3>
+        </div>
+        <div class="panel-body">
+           {{comment.text}}
+        </div>
+      </div>
+
+      <form role="commentForm" name="commentForm" ng-submit='sendComment()' novalidate>
+        <fieldset>
+          <legend>Respond</legend>
+            <div class="form-group has-success has-feedback">
+              <label>Username</label>
+              <input type="text"
+                     class="form-control"
+                     ng-model="cusername"
+                     placeholder="Enter username"
+                     name="username">
+            </div>
+
+            <div class="form-group">
+              <label>Response</label>
+              <textarea class="form-control" ng-model="ctext" placeholder="Write your response"></textarea>
+            </div>
+        </fieldset>
+        <hr>
+
+        <button class="btn btn-primary btn-block">
+          Comment
+        </button>
+
+      </form>
+
+
+
+
+    </div>
+  </div>
+</div>

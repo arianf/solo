@@ -5,7 +5,6 @@
 var app = angular.module('PleaseRespond', [
   'ngRoute',
   'mobile-angular-ui',
-  
   // touch/drag feature: this is from 'mobile-angular-ui.gestures.js'
   // it is at a very beginning stage, so please be careful if you like to use
   // in production. This is intended to provide a flexible, integrated and and 
@@ -27,7 +26,8 @@ app.run(function($transform) {
 app.config(function($routeProvider) {
   $routeProvider.when('/',              {templateUrl: 'home.html', reloadOnSearch: false});
   $routeProvider.when('/ask',           {templateUrl: 'ask.html', controller: 'Ask', reloadOnSearch: false});
-  $routeProvider.when('/scroll',        {templateUrl: 'scroll.html', reloadOnSearch: false}); 
+  $routeProvider.when('/view',          {templateUrl: 'view.html', controller: 'View', reloadOnSearch: false}); 
+  $routeProvider.when('/view/:param',   {templateUrl: 'viewItem.html', controller: 'ViewItem', reloadOnSearch: false });
   $routeProvider.when('/toggle',        {templateUrl: 'toggle.html', reloadOnSearch: false}); 
   $routeProvider.when('/tabs',          {templateUrl: 'tabs.html', reloadOnSearch: false}); 
   $routeProvider.when('/accordion',     {templateUrl: 'accordion.html', reloadOnSearch: false}); 
@@ -39,23 +39,49 @@ app.config(function($routeProvider) {
   $routeProvider.when('/drag',          {templateUrl: 'drag.html', reloadOnSearch: false});
   $routeProvider.when('/drag2',         {templateUrl: 'drag2.html', reloadOnSearch: false});
   $routeProvider.when('/carousel',      {templateUrl: 'carousel.html', reloadOnSearch: false});
+  $routeProvider.otherwise({ redirectTo: '/' });
 });
 
-app.directive( 'goClick', function ( $location ) {
-  return function ( scope, element, attrs ) {
-    var path;
+app.factory('Links', function ($http) {
 
-    attrs.$observe( 'goClick', function (val) {
-      path = val;
+  var addLink = function(link) {
+
+    return $http({
+      method: 'POST',
+      url: '/api/ask',
+      data: link
     });
 
-    element.bind( 'click', function () {
-      scope.$apply( function () {
-        $location.path( path );
-      });
+  };
+
+  var getAll = function () {
+    return $http({
+      method: 'GET',
+      url: '/api/ask'
+    })
+    .then(function (resp) {
+      return resp.data;
     });
   };
+
+  var get = function(id) {
+    return $http({
+      method: 'GET',
+      url: '/api/ask?id='+id
+    })
+    .then(function (resp) {
+      return resp.data;
+    });
+  };
+
+  return {
+    addLink: addLink,
+    getAll: getAll,
+    get: get
+  };
 });
+
+
 
 // 
 // `$touch example`
@@ -268,10 +294,67 @@ app.directive('dragMe', ['$drag', function($drag){
 // For this trivial demo we have just a unique MainController 
 // for everything
 //
-app.controller('Ask', function($rootScope, $scope){
-  $scope.test = function(direction) {
-    alert('TESTED');
+app.controller('Ask', function($rootScope, $scope, $location, Links){
+  
+
+  $scope.ask = function() {
+    console.log("HEY YOU ASKED!");
+    var data = {
+      'title' : $scope.title,
+      'desc' : $scope.desc
+    };
+
+    Links.addLink(data).then(function (response) {
+      $location.path('/view');
+
+    });
+    
   };
+});
+
+app.controller('View', function($rootScope, $scope, $location, Links){
+  // 
+  // 'Scroll' screen
+  // 
+  var viewItems = [];
+
+  Links.getAll().then(function(response){
+    // console.log(response);
+    $scope.viewItems = response;
+  });
+  // for (var i=1; i<=100; i++) {
+  //   viewItems.push('Item ' + i);
+  // }
+
+  $scope.viewItems = viewItems;
+
+  $scope.bottomReached = function() {
+    /* global alert: false; */
+    // alert('Congrats you viewed to the end of the list!');
+  };
+});
+
+app.controller('ViewItem', function($rootScope, $scope, $routeParams, $location, Links){
+  $scope.count = 1;
+  $scope.param = $routeParams.param;
+  $scope.comments = [];
+
+  $scope.sendComment = function() {
+    $scope.comments.push({
+      id: $scope.count,
+      username: $scope.cusername,
+      text: $scope.ctext
+    });
+    $scope.ctext = '';
+    $scope.count++;
+  };
+
+  Links.get($scope.param).then(function(response){
+    $scope.response = response;
+    if(response.id === 1){
+      $scope.url = '/img/img1.png';
+    }
+  });
 });
 
 app.directive('validFile',function(){
@@ -279,7 +362,7 @@ app.directive('validFile',function(){
     require:'ngModel',
     link:function(scope, el, attrs, ngModel){
       //change event is fired when file is selected
-      el.bind('change',function(){
+      el.bind('change', function(){
         scope.$apply(function(){
           ngModel.$setViewValue(el.val());
           ngModel.$render();
@@ -288,6 +371,7 @@ app.directive('validFile',function(){
     }
   };
 });
+
 
 app.controller('MainController', function($rootScope, $scope){
 
@@ -310,21 +394,7 @@ app.controller('MainController', function($rootScope, $scope){
   // Fake text i used here and there.
   $scope.lorem = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel explicabo, aliquid eaque soluta nihil eligendi adipisci error, illum corrupti nam fuga omnis quod quaerat mollitia expedita impedit dolores ipsam. Obcaecati.';
 
-  // 
-  // 'Scroll' screen
-  // 
-  var scrollItems = [];
-
-  for (var i=1; i<=100; i++) {
-    scrollItems.push('Item ' + i);
-  }
-
-  $scope.scrollItems = scrollItems;
-
-  $scope.bottomReached = function() {
-    /* global alert: false; */
-    alert('Congrats you scrolled to the end of the list!');
-  };
+  
 
   // 
   // Right Sidebar

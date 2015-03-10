@@ -12,6 +12,7 @@
     "mocha": "^1.21.4",
     "morgan": "^1.4.1",
     "mysql": "^2.4.2",
+    "ng-file-upload": "^3.1.2",
     "request": "^2.40.0",
     "sequelize": "^2.0.4"
   }

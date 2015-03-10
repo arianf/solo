@@ -1,7 +1,36 @@
 <div ui-content-for="title">
   <span>Ask a Please Response</span>
 </div>
-
+<script>
+$(function () {
+  $('#fileupload').fileupload({
+    dataType: 'json',
+    add: function (e, data) {
+      $.each(data.files, function (index, file) {
+        data.context = $('<p/>').text('Uploading...').appendTo(document.body);
+        $.ajax({
+          url: '/api/ask',
+          type: 'POST',
+          data: {name: file.name, size: file.size, type:file.type},
+        }).success(function(res){
+          $.ajax({
+            url: res.url,
+            type: 'PUT',
+            data: file,
+            processData: false,
+              contentType: file.type,
+          }).success(function(res){
+            console.log('Done');
+          });
+          $('<p/>').text(file.name).appendTo(document.body);
+        }).error(function(){
+          console.log("error");
+        });
+      });
+    }
+  });
+});
+</script>
 <div class="scrollable">
  <div class="scrollable-content section">
    
@@ -16,14 +45,15 @@
                  placeholder="Enter title"
                  name="title" required>
         </div>
+
         <div style="color: red" ng-show="askForm.title.$dirty && askForm.title.$error.required">You can't leave this field empty!</div>
 
         <div class="form-group">
           <label>Description</label>
-          <textarea class="form-control" placeholder="Explain the situtation"></textarea>
+          <textarea class="form-control" ng-model="desc" placeholder="Explain the situtation"></textarea>
         </div>
-
         <div class="form-group">
+        
         <span class="file-input btn btn-block btn-success btn-file">
             Browse&hellip; <input type="file" valid-file ng-model="filename" required>
         </span>
@@ -39,6 +69,9 @@
     <div ui-content-for="navbarAction">
       <button class='btn' ng-click='askForm.$valid && ask()' data-ng-disabled='askForm.$invalid'>Ask</button>
     </div>
+
+    <br><br><br><br>
+    <a href="/" class="btn btn-danger btn-block">Back</a>
 
   </form>
  </div>

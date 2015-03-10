@@ -6,7 +6,7 @@ var morgan = require('morgan');
 var parser = require('body-parser');
 
 // Router
-// var router = require('./routes.js');
+var router = require('./routes.js');
 
 var app = express();
 module.exports.app = app;
@@ -14,12 +14,15 @@ module.exports.app = app;
 // Set what we are listening on.
 app.set("port", 4568);
 
+// parse application/x-www-form-urlencoded
+app.use(parser.urlencoded({ extended: false }));
+
 // Logging and parsing
 app.use(morgan('dev'));
 app.use(parser.json());
 
 // Set up our routes
-// app.use("/classes", router);
+app.use("/api", router);
 
 // Serve the client files
 app.use(express.static(__dirname + "/../client"));
