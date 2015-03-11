@@ -1,39 +1,11 @@
 var db = require('../db');
 var bluebird = require('bluebird');
-var AWS = require('aws-sdk');
-AWS.config.region = 'us-east-1';
-// console.log(AWS.config);
-// export AWS_ACCESS_KEY_ID='AKIAJ6NVAAPSCEMGU3BA'
-// export AWS_SECRET_ACCESS_KEY='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'
-
-// var s3 = new AWS.S3();
-// s3.listBuckets(function(err, data) {
-//   if (err) { console.log("Error:", err); }
-//   else {
-//     for (var index in data.Buckets) {
-//       var bucket = data.Buckets[index];
-//       console.log("Bucket: ", bucket.Name, ' : ', bucket.CreationDate);
-//     }
-//   }
-// });
-
-// var s3bucket = new AWS.S3({params: {Bucket: 'pleaserespond'}});
-// s3bucket.createBucket(function() {
-//   var params = {Key: 'myKey', Body: 'Hello!'};
-//   s3bucket.upload(params, function(err, data) {
-//     if (err) {
-//       console.log("Error uploading data: ", err);
-//     } else {
-//       console.log("Successfully uploaded data to myBucket/myKey");
-//     }
-//   });
-// });
-
+var Sequelize = require('sequelize');
 
 module.exports = {
   ask: {
     get: function (req, res) {
-      if(req.query.id !== undefined && req.query.id > 0 && req.query.id !== ''){
+      if(req.query.id !== undefined && req.query.id >= 0 && req.query.id !== ''){
         db.Post.find(req.query.id).complete(function(err, results){
           res.json(results);
         });
@@ -53,6 +25,51 @@ module.exports = {
         });
       }else{
         res.sendStatus(404, 'title not provided');
+      }
+    }
+  },
+  comment: {
+    get: function(req, res) {
+      if(req.query.id !== undefined && req.query.id >= 0 && req.query.id !== ''){
+        db.Comment.findAll({where: {postId: req.query.id}})
+          .complete(function(err, results){
+            res.json(results);
+          });
+      }
+    },
+    post: function(req, res) {
+      if(req.body.id !== undefined && req.body.id >= 0 && req.body.id !== '' && req.body.text !== undefined){
+        if(req.body.username === ''){
+          req.body.username = undefined;
+        }
+        db.Comment.create({postId: req.body.id, text: req.body.text, username: req.body.username}).complete(function(err, results){
+          res.json(results);
+        });
+      }else{
+        res.end('failed');
+      }
+    }
+  },
+  vote: {
+    get: function(req, res) {
+
+    },
+    post: function(req, res) {
+      if(req.body.id !== undefined && req.body.id >= 0 && req.body.id !== ''){
+        var voting = 'vote';
+        if(req.body.up !== undefined){
+          voting = voting + '+1';
+        }else{
+          voting = voting + '-1';
+        }
+        db.Comment.update({vote: Sequelize.literal(voting)},{where: { id : req.body.id }})
+          .success(function () { 
+            res.sendStatus(202);
+          })
+          .error(function () {
+            console.log('error happened');
+            res.sendStatus(500);
+         });
       }
     }
   },

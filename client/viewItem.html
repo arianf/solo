@@ -30,16 +30,16 @@
               <li><a>Report</a></li>
             </ul>
           </div>
-          <h3 class="panel-title">{{response.title}}</h3>
+          <h3 class="panel-title">{{response.title}} | asked by {{response.username}}</h3>
         </div>
         <div class="panel-body">
            {{response.desc}}
            <br><br>
-           <img src="{{url}}" />
+           <img ng-src="{{url}}" />
         </div>
       </div>
 
-      <div class="panel panel-default"  ng-repeat="comment in comments">
+      <div class="panel panel-default"  ng-repeat="comment in comments | orderBy:'-vote'">
         <div class="panel-heading">
           <div class="btn-group pull-right">
             <a ui-turn-on='myDropdown{{comment.id}}' class='btn'>
@@ -62,7 +62,7 @@
               <li><a>Report</a></li>
             </ul>
           </div>
-          <h3 class="panel-title">{{comment.username}}</h3>
+          <h3 class="panel-title"> {{comment.vote}}  <a><i ng-click="up(comment.id)" class="fa fa-arrow-up"></i></a> <a><i ng-click="down(comment.id)" class="fa fa-arrow-down"></i></a> | {{comment.username}}</h3>
         </div>
         <div class="panel-body">
            {{comment.text}}

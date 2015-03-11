@@ -8,6 +8,12 @@ var Post = orm.define('post', {
   title: Sequelize.STRING,
   desc: Sequelize.STRING
 });
+
+var Comment = orm.define('comment', {
+  username: {type: Sequelize.STRING, defaultValue: 'anonymous'},
+  text: Sequelize.STRING,
+  vote: {type: Sequelize.INTEGER, defaultValue: 0}
+});
 // var User = orm.define('User', {
 //   username: Sequelize.STRING
 // });
@@ -20,10 +26,14 @@ var Post = orm.define('post', {
 // User.hasMany(Message);
 // Message.belongsTo(User);
 
+Comment.belongsTo(Post);
+
 Post.sync();
+Comment.sync();
 // User.sync();
 // Message.sync();
 
+exports.Comment = Comment;
 exports.Post = Post;
 // exports.User = User;
 // exports.Message = Message;
